@@ -1,0 +1,62 @@
+[
+  {
+    "prostitution": 1708,
+    "vehicle_theft": 8942,
+    "crime_tot": 184785,
+    "district": "CENTRAL"
+  },
+  {
+    "prostitution": 3873,
+    "vehicle_theft": 13300,
+    "crime_tot": 226723,
+    "district": "NORTHERN"
+  },
+  {
+    "prostitution": 14,
+    "vehicle_theft": 8555,
+    "crime_tot": 106457,
+    "district": "PARK"
+  },
+  {
+    "prostitution": 401,
+    "vehicle_theft": 10031,
+    "crime_tot": 336170,
+    "district": "SOUTHERN"
+  },
+  {
+    "prostitution": 7096,
+    "vehicle_theft": 15404,
+    "crime_tot": 253487,
+    "district": "MISSION"
+  },
+  {
+    "prostitution": 1978,
+    "vehicle_theft": 2100,
+    "crime_tot": 170976,
+    "district": "TENDERLOIN"
+  },
+  {
+    "prostitution": 52,
+    "vehicle_theft": 8669,
+    "crime_tot": 96574,
+    "district": "RICHMOND"
+  },
+  {
+    "prostitution": 250,
+    "vehicle_theft": 12914,
+    "crime_tot": 140838,
+    "district": "TARAVAL"
+  },
+  {
+    "prostitution": 67,
+    "vehicle_theft": 18916,
+    "crime_tot": 168188,
+    "district": "INGLESIDE"
+  },
+  {
+    "prostitution": 131,
+    "vehicle_theft": 14733,
+    "crime_tot": 189450,
+    "district": "BAYVIEW"
+  }
+]

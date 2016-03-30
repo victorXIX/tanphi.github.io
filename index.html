@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <title>D3 Page</title>
+	  <link rel="shortcut icon" href="http://tanphi.github.io/icon.png">
+      <script type="text/javascript" src="../d3/d3.js"></script>
+	  <style type="text/css">
+			
+			.axis path,
+			.axis line {
+				fill: none;
+				stroke: black;
+				shape-rendering: crispEdges;
+			}
+			
+			.axis text {
+				font-family: sans-serif;
+				font-size: 11px;
+			}
+
+		</style>
+  </head>
+  <body>
+		<h2 id = "subtitle">Data for 2003</h2>
+	  <p id="p2003">Data for 2003</p>
+	  <p id="p2015">Data for 2015</p>
+      
+	  <script type="text/javascript">
+        //Width and height
+			var w = 600;
+			var h = 380;
+			var padding = 40;
+			var xTrans = 20;
+			
+			//general dataset
+			var datasetG = {"d2003":[
+					  {
+						"prostitution": 70,
+						"vehicle_theft": 1193,
+						"crime_tot": 13622,
+						"district": "CENTRAL"
+					  },
+					  {
+						"prostitution": 581,
+						"vehicle_theft": 1879,
+						"crime_tot": 18975,
+						"district": "NORTHERN"
+					  },
+					  {
+						"prostitution": 2,
+						"vehicle_theft": 1207,
+						"crime_tot": 8219,
+						"district": "PARK"
+					  },
+					  {
+						"prostitution": 18,
+						"vehicle_theft": 1426,
+						"crime_tot": 25692,
+						"district": "SOUTHERN"
+					  },
+					  {
+						"prostitution": 713,
+						"vehicle_theft": 2063,
+						"crime_tot": 21163,
+						"district": "MISSION"
+					  },
+					  {
+						"prostitution": 527,
+						"vehicle_theft": 371,
+						"crime_tot": 12737,
+						"district": "TENDERLOIN"
+					  },
+					  {
+						"prostitution": 15,
+						"vehicle_theft": 1081,
+						"crime_tot": 7692,
+						"district": "RICHMOND"
+					  },
+					  {
+						"prostitution": 10,
+						"vehicle_theft": 1665,
+						"crime_tot": 11329,
+						"district": "TARAVAL"
+					  },
+					  {
+						"prostitution": 5,
+						"vehicle_theft": 2319,
+						"crime_tot": 14008,
+						"district": "INGLESIDE"
+					  },
+					  {
+						"prostitution": 11,
+						"vehicle_theft": 2121,
+						"crime_tot": 15739,
+						"district": "BAYVIEW"
+					  }
+					],
+					
+					"d2015":[
+					  {
+						"prostitution": 114,
+						"vehicle_theft": 1742,
+						"crime_tot": 31990,
+						"district": "CENTRAL"
+					  },
+					  {
+						"prostitution": 623,
+						"vehicle_theft": 2821,
+						"crime_tot": 38786,
+						"district": "NORTHERN"
+					  },
+					  {
+						"prostitution": 3,
+						"vehicle_theft": 1846,
+						"crime_tot": 17441,
+						"district": "PARK"
+					  },
+					  {
+						"prostitution": 114,
+						"vehicle_theft": 2219,
+						"crime_tot": 55403,
+						"district": "SOUTHERN"
+					  },
+					  {
+						"prostitution": 779,
+						"vehicle_theft": 3258,
+						"crime_tot": 39476,
+						"district": "MISSION"
+					  },
+					  {
+						"prostitution": 550,
+						"vehicle_theft": 483,
+						"crime_tot": 23321,
+						"district": "TENDERLOIN"
+					  },
+					  {
+						"prostitution": 24,
+						"vehicle_theft": 1642,
+						"crime_tot": 16663,
+						"district": "RICHMOND"
+					  },
+					  {
+						"prostitution": 88,
+						"vehicle_theft": 2451,
+						"crime_tot": 23081,
+						"district": "TARAVAL"
+					  },
+					  {
+						"prostitution": 9,
+						"vehicle_theft": 3685,
+						"crime_tot": 27141,
+						"district": "INGLESIDE"
+					  },
+					  {
+						"prostitution": 17,
+						"vehicle_theft": 3102,
+						"crime_tot": 30092,
+						"district": "BAYVIEW"
+					  }
+				]};
+
+			var dataset = datasetG.d2003;
+			
+			//Find max values for scales
+			//Take the greatest value of the two max for each year
+			var maxX = Math.max(d3.max(datasetG.d2003, function(d) { return d.prostitution; }),      d3.max(datasetG.d2015, function(d) { return d.prostitution; }));
+			
+			var maxY = Math.max(d3.max(datasetG.d2003, function(d) { return d.vehicle_theft; }),      d3.max(datasetG.d2015, function(d) { return d.vehicle_theft; }));
+			
+			var maxR = Math.max(d3.max(datasetG.d2003, function(d) { return d.crime_tot; }),      d3.max(datasetG.d2015, function(d) { return d.crime_tot; }));
+
+			
+			
+			
+			//Create scale functions
+			var xScale = d3.scale.linear()
+								 .domain([0, maxX])
+								 .range([padding + xTrans, w - padding + xTrans]);
+
+			var yScale = d3.scale.linear()
+								 .domain([0, maxY])
+								 .range([h - padding, padding]);
+
+			var rScale = d3.scale.linear()
+								 .domain([0, maxR])
+								 .range([2, 8]);
+
+			//Define X axis
+			var xAxis = d3.svg.axis()
+							  .scale(xScale)
+							  .orient("bottom")
+							  .ticks(5);
+
+			//Define Y axis
+			var yAxis = d3.svg.axis()
+							  .scale(yScale)
+							  .orient("left")
+							  .ticks(5);
+
+			//Create SVG element
+			var svg = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+						
+
+			//Create circles
+			svg.selectAll("circle")
+			   .data(dataset)
+			   .enter()
+			   .append("circle")
+			   .attr("cx", function(d) {
+			   		return xScale(d.prostitution);
+			   })
+			   .attr("cy", function(d) {
+			   		return yScale(d.vehicle_theft);
+			   })
+			   .attr("r", function(d) {
+			   		return rScale(d.crime_tot);
+			   });
+
+			//Create labels
+			svg.selectAll("text")
+			   .data(dataset)
+			   .enter()
+			   .append("text")
+			   .text(function(d) {
+			   		return d.district.charAt(0).toUpperCase() + d.district.slice(1).toLowerCase();  //Capitalize just the first letter of the label
+			   })
+			   .attr("x", function(d) {
+			   		return xScale(d.prostitution) + rScale(d.crime_tot) + 2;   //Add the radius so that the circles and the labels don't overlap
+			   })
+			   .attr("y", function(d) {
+			   		return yScale(d.vehicle_theft) + 4;
+			   })
+			   .attr("font-family", "sans-serif")
+			   .attr("font-size", "10px")
+			   .attr("fill", "blue");
+			
+			//Create X axis
+			svg.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + (h - padding) + ")")
+				.call(xAxis);
+				
+			var yAxisTrans = padding + xTrans;
+			//Create Y axis
+			svg.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(" + yAxisTrans +  ",0)")
+				.call(yAxis);
+				
+					
+			//Create X label
+			svg.append("text")
+				.attr("y", h  )
+				.attr("x", w / 2)
+				//.attr("dy", "1em")
+				.style("text-anchor", "middle")
+				.text("Vehicle Theft")
+			    .attr("font-size", "15px")
+			    .attr("fill", "DarkGray");		
+				
+				
+			//Create Y label
+			svg.append("text")
+				.attr("transform", "rotate(-90)")
+				.attr("y", 0 )
+				.attr("x",- (h / 2))
+				.attr("dy", "1em")
+				.style("text-anchor", "middle")
+				.text("Prostitution")
+			    .attr("font-size", "15px")
+			    .attr("fill", "DarkGray");
+
+				
+				
+			
+			//On click, change the dataset and update 
+			d3.selectAll("p")
+				.on("click", function() {
+					//See which p was clicked
+					var paragraphID = d3.select(this).attr("id");
+					
+					//Decide what to do next
+					if (paragraphID == "p2003") {
+						dataset = datasetG.d2003;
+					};
+					
+					if (paragraphID == "p2015") {
+						dataset = datasetG.d2015;
+					};
+		
+					//Update…
+					
+					//Update all circles
+					svg.selectAll("circle")
+					   .data(dataset)
+					   .transition()
+   					   .duration(1000)
+					   .attr("cx", function(d) {
+					   		return xScale(d.prostitution);
+					   })
+					   .attr("cy", function(d) {
+					   		return yScale(d.vehicle_theft);
+					   })
+					   .attr("r", function(d) {
+							return rScale(d.crime_tot);
+					   });
+					 
+					//Update all labels
+					svg.selectAll("text")
+					   .data(dataset)
+					   .transition()
+					   .duration(1000)
+					   .attr("x", function(d) {
+			   		return xScale(d.prostitution) + rScale(d.crime_tot) + 2;
+					   })
+					   .attr("y", function(d) {
+							return yScale(d.vehicle_theft) + 4;
+					   })
+					 
+				});
+		
+      </script>
+	
+  </body>
+</html>
