@@ -42,136 +42,32 @@
         //Width and height
 			var w = 600;
 			var h = 380;
-			var padding = 40;
-			var xTrans = 20;
+			var padding = 60;
 			
-			//general dataset
-			var datasetG = {"d2003":[
-					  {
-						"prostitution": 70,
-						"vehicle_theft": 1193,
-						"crime_tot": 13622,
-						"district": "CENTRAL"
-					  },
-					  {
-						"prostitution": 581,
-						"vehicle_theft": 1879,
-						"crime_tot": 18975,
-						"district": "NORTHERN"
-					  },
-					  {
-						"prostitution": 2,
-						"vehicle_theft": 1207,
-						"crime_tot": 8219,
-						"district": "PARK"
-					  },
-					  {
-						"prostitution": 18,
-						"vehicle_theft": 1426,
-						"crime_tot": 25692,
-						"district": "SOUTHERN"
-					  },
-					  {
-						"prostitution": 713,
-						"vehicle_theft": 2063,
-						"crime_tot": 21163,
-						"district": "MISSION"
-					  },
-					  {
-						"prostitution": 527,
-						"vehicle_theft": 371,
-						"crime_tot": 12737,
-						"district": "TENDERLOIN"
-					  },
-					  {
-						"prostitution": 15,
-						"vehicle_theft": 1081,
-						"crime_tot": 7692,
-						"district": "RICHMOND"
-					  },
-					  {
-						"prostitution": 10,
-						"vehicle_theft": 1665,
-						"crime_tot": 11329,
-						"district": "TARAVAL"
-					  },
-					  {
-						"prostitution": 5,
-						"vehicle_theft": 2319,
-						"crime_tot": 14008,
-						"district": "INGLESIDE"
-					  },
-					  {
-						"prostitution": 11,
-						"vehicle_theft": 2121,
-						"crime_tot": 15739,
-						"district": "BAYVIEW"
-					  }
-					],
-					
-					"d2015":[
-					  {
-						"prostitution": 114,
-						"vehicle_theft": 1742,
-						"crime_tot": 31990,
-						"district": "CENTRAL"
-					  },
-					  {
-						"prostitution": 623,
-						"vehicle_theft": 2821,
-						"crime_tot": 38786,
-						"district": "NORTHERN"
-					  },
-					  {
-						"prostitution": 3,
-						"vehicle_theft": 1846,
-						"crime_tot": 17441,
-						"district": "PARK"
-					  },
-					  {
-						"prostitution": 114,
-						"vehicle_theft": 2219,
-						"crime_tot": 55403,
-						"district": "SOUTHERN"
-					  },
-					  {
-						"prostitution": 779,
-						"vehicle_theft": 3258,
-						"crime_tot": 39476,
-						"district": "MISSION"
-					  },
-					  {
-						"prostitution": 550,
-						"vehicle_theft": 483,
-						"crime_tot": 23321,
-						"district": "TENDERLOIN"
-					  },
-					  {
-						"prostitution": 24,
-						"vehicle_theft": 1642,
-						"crime_tot": 16663,
-						"district": "RICHMOND"
-					  },
-					  {
-						"prostitution": 88,
-						"vehicle_theft": 2451,
-						"crime_tot": 23081,
-						"district": "TARAVAL"
-					  },
-					  {
-						"prostitution": 9,
-						"vehicle_theft": 3685,
-						"crime_tot": 27141,
-						"district": "INGLESIDE"
-					  },
-					  {
-						"prostitution": 17,
-						"vehicle_theft": 3102,
-						"crime_tot": 30092,
-						"district": "BAYVIEW"
-					  }
-				]};
-
+			
+			//read a file, here for our local dataset
+			function readTextFile(file)
+			{
+				var rawFile = new XMLHttpRequest();
+				rawFile.open("GET", file, false);
+				rawFile.onreadystatechange = function ()
+				{
+					if(rawFile.readyState === 4)
+					{
+						if(rawFile.status === 200 || rawFile.status == 0)
+						{
+							var allText = rawFile.responseText;
+						}
+					}
+				}
+				rawFile.send(null);
+				return rawFile.responseText;
+			};
+			
+			//Read our local data file and parse it to JSON			
+			var datasetG = JSON.parse(readTextFile("data2B.json"));
+			
+			//Initial dataset
 			var dataset = datasetG.d2003;
 			
 			//Find max values for scales
@@ -188,7 +84,7 @@
 			//Create scale functions
 			var xScale = d3.scale.linear()
 								 .domain([0, maxX])
-								 .range([padding + xTrans, w - padding + xTrans]);
+								 .range([padding, w - padding]);
 
 			var yScale = d3.scale.linear()
 								 .domain([0, maxY])
@@ -255,20 +151,18 @@
 				.attr("class", "axis")
 				.attr("transform", "translate(0," + (h - padding) + ")")
 				.call(xAxis);
-				
-			var yAxisTrans = padding + xTrans;
+		
 			//Create Y axis
 			svg.append("g")
 				.attr("class", "axis")
-				.attr("transform", "translate(" + yAxisTrans +  ",0)")
+				.attr("transform", "translate(" + padding +  ",0)")
 				.call(yAxis);
 				
 					
 			//Create X label
 			svg.append("text")
-				.attr("y", h  )
+				.attr("y", h - padding /2)
 				.attr("x", w / 2)
-				//.attr("dy", "1em")
 				.style("text-anchor", "middle")
 				.text("Vehicle Theft")
 			    .attr("font-size", "15px")
@@ -295,7 +189,7 @@
 					//See which p was clicked
 					var paragraphID = d3.select(this).attr("id");
 					
-					//Decide what to do next
+					//Select the new dataset
 					if (paragraphID == "p2003") {
 						dataset = datasetG.d2003;
 					};
