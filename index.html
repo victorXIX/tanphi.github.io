@@ -263,34 +263,39 @@
 			
 			var xScale2 = d3.scale.ordinal()
 							.domain(d3.range(dataset2.length))
-							.rangeRoundBands([0, w], 0.05);
+							.rangeRoundBands([padding, w - padding], 0.05);
 							
 							
 			var yScale2 = d3.scale.linear()
 							.domain([0, d3.max(dataset2, function(d) { return d.value; })])
-							.range([0, h]);
+							.range([padding,h - padding]);
 										
 			//Define X axis
 			var xAxis2 = d3.svg.axis()
 							  .scale(xScale2)
 							  .orient("bottom");
+							  
+		
+			//Create SVG element
+			var svg2 = d3.select("body")
+						.append("svg")
+						.attr("width", w)
+						.attr("height", h);
+						
+			//Create X axis
+			svg2.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + (h - padding) + ")")
+				.call(xAxis2);
 
-			//Define Y axis
-			var yAxis2 = d3.svg.axis()
-							  .scale(yScale2)
-							  .orient("left")
-							  .ticks(5);
+				   
 			
 			//Define key function, to be used when binding data
 			var key = function(d) {
 				return d.key;
 			};
 			
-			//Create SVG element
-			var svg2 = d3.select("body")
-						.append("svg")
-						.attr("width", w)
-						.attr("height", h);
+			
 			//Create bars
 			svg2.selectAll("rect")
 			   .data(dataset2, key)
@@ -300,7 +305,7 @@
 			   		return xScale2(i);
 			   })
 			   .attr("y", function(d) {
-			   		return h - yScale2(d.value);
+			   		return h - yScale2(d.value) - padding;
 			   })
 			   .attr("width", xScale2.rangeBand())
 			   .attr("height", function(d) {
@@ -322,27 +327,18 @@
 			   		return xScale2(i) + xScale2.rangeBand() / 2;
 			   })
 			   .attr("y", function(d) {
-			   		return h - yScale2(d.value) + 14;
+			   		return h - padding - yScale2(d.value) + 14;
 			   })
 			   .attr("font-family", "sans-serif")
 			   .attr("font-size", "11px")
 			   .attr("fill", "white");
 			   
-			 
-			  /*
-			 //Create X axis
-			svg2.append("g")
-				.attr("class", "axis")
-				.attr("transform", "translate(0," + (h - padding) + ")")
-				.call(xAxis2);
+			   
+			  
+
+
 		
-			//Create Y axis
-			svg2.append("g")
-				.attr("class", "axis")
-				.attr("transform", "translate(" + padding +  ",0)")
-				.call(yAxis2);
-			   */
-			 
+
 			 function ClickFirst(){
 				dataset2 = dataset2G.first;
 				Update2();
@@ -356,7 +352,7 @@
 			//Update the rect and the texts	
 			function Update2(){
 					//Update scale domains
-					xScale2.domain(d3.range(dataset2.length));
+					//xScale2.domain(d3.range(dataset2.length));
 					yScale2.domain([0, d3.max(dataset2, function(d) { return d.value; })]);
 					//Select…
 					var bars = svg2.selectAll("rect")
@@ -365,9 +361,9 @@
 					//Enter…
 					bars.enter()
 						.append("rect")
-						.attr("x", w)
+						.attr("x",w)
 						.attr("y", function(d) {
-							return h - yScale2(d.value);
+							return h - yScale2(d.value) - padding;
 						})
 						.attr("width", xScale2.rangeBand())
 						.attr("height", function(d) {
@@ -383,7 +379,7 @@
 							return xScale2(i);
 						})
 						.attr("y", function(d) {
-							return h - yScale2(d.value);
+							return h - yScale2(d.value) - padding;
 						})
 						.attr("width", xScale2.rangeBand())
 						.attr("height", function(d) {
@@ -412,10 +408,10 @@
 					   })
 					   .attr("text-anchor", "middle")
 					   .attr("x", function(d, i) {
-							return xScale2(i) + xScale2.rangeBand() ;
+							return w ;
 					   })
 					   .attr("y", function(d) {
-							return h - yScale2(d.value) ;
+							return h - yScale2(d.value) - padding ;
 					   })
 					   .attr("font-family", "sans-serif")
 					   .attr("font-size", "11px")
@@ -427,7 +423,7 @@
 							return xScale2(i)  + xScale2.rangeBand() /2;
 						})
 						.attr("y", function(d) {
-							return h - yScale2(d.value) + 14;
+							return h - yScale2(d.value) + 14 - padding;
 						});
 					//Exit…
 					texts.exit()
@@ -436,9 +432,31 @@
 						.attr("x", -xScale2.rangeBand())
 						.remove();
 				};
+		
+			function choice(typeForm){
+				var i = typeForm.box1.selectedIndex;
+				switch(i){
+					case 0:
+						dataset2 = dataset2G.first;
+						Update2();
+						break;
+					case 1:
+						dataset2 = dataset2G.second;
+						Update2();
+						break;
+				}
+			}
+		
 		</script>
 		<p></p><p></p>
 		<button onclick="ClickFirst();">Click me !</button>
 		<button onclick="ClickSecond();">Click me 2 !</button>
+		<p></p>
+		<form name="typeForm">
+		<select name="box1" onChange="choice(this.form)">
+		<option selected>First</option>
+		<option>Second</option>
+		</select>
+		</form>
   </body>
 </html>
