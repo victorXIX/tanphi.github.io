@@ -93,7 +93,8 @@
 			var rScale = d3.scale.linear()
 								 .domain([0, maxR])
 								 .range([2, 8]);
-
+			
+			
 			//Define X axis
 			var xAxis = d3.svg.axis()
 							  .scale(xScale)
@@ -105,7 +106,7 @@
 							  .scale(yScale)
 							  .orient("left")
 							  .ticks(5);
-
+			
 			//Create SVG element
 			var svg = d3.select("body")
 						.append("svg")
@@ -158,7 +159,7 @@
 				.attr("transform", "translate(" + padding +  ",0)")
 				.call(yAxis);
 				
-					
+			
 			//Create X label
 			svg.append("text")
 				.attr("y", h - padding /2)
@@ -263,9 +264,22 @@
 			var xScale2 = d3.scale.ordinal()
 							.domain(d3.range(dataset2.length))
 							.rangeRoundBands([0, w], 0.05);
+							
+							
 			var yScale2 = d3.scale.linear()
 							.domain([0, d3.max(dataset2, function(d) { return d.value; })])
 							.range([0, h]);
+										
+			//Define X axis
+			var xAxis2 = d3.svg.axis()
+							  .scale(xScale2)
+							  .orient("bottom");
+
+			//Define Y axis
+			var yAxis2 = d3.svg.axis()
+							  .scale(yScale2)
+							  .orient("left")
+							  .ticks(5);
 			
 			//Define key function, to be used when binding data
 			var key = function(d) {
@@ -315,6 +329,20 @@
 			   .attr("fill", "white");
 			   
 			 
+			  /*
+			 //Create X axis
+			svg2.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(0," + (h - padding) + ")")
+				.call(xAxis2);
+		
+			//Create Y axis
+			svg2.append("g")
+				.attr("class", "axis")
+				.attr("transform", "translate(" + padding +  ",0)")
+				.call(yAxis2);
+			   */
+			 
 			 function ClickFirst(){
 				dataset2 = dataset2G.first;
 				Update2();
@@ -325,7 +353,7 @@
 				Update2();
 			 }
 			
-					
+			//Update the rect and the texts	
 			function Update2(){
 					//Update scale domains
 					xScale2.domain(d3.range(dataset2.length));
@@ -367,23 +395,46 @@
 						.duration(500)
 						.attr("x", -xScale2.rangeBand())
 						.remove();
+					
+					
 					//Update all labels
 					//
 					//Exercise: Modify this code to remove the correct label each time!
 					//
-					svg2.selectAll("text")
-					   .data(dataset2, key)
-					   .transition()
-					   .duration(500)
-					   .text(function(d) {
+					var texts = svg2.selectAll("text")
+						.data(dataset2, key);
+					
+					//Enter…
+					texts.enter()
+						.append("text")
+						.text(function(d) {
 					   		return d.value;
 					   })
+					   .attr("text-anchor", "middle")
 					   .attr("x", function(d, i) {
-							return xScale2(i) + xScale2.rangeBand() / 2;
+							return xScale2(i) + xScale2.rangeBand() ;
 					   })
 					   .attr("y", function(d) {
+							return h - yScale2(d.value) ;
+					   })
+					   .attr("font-family", "sans-serif")
+					   .attr("font-size", "11px")
+					   .attr("fill", "white");
+					//Update…
+					texts.transition()
+						.duration(500)
+						.attr("x", function(d, i) {
+							return xScale2(i)  + xScale2.rangeBand() /2;
+						})
+						.attr("y", function(d) {
 							return h - yScale2(d.value) + 14;
-					   });
+						});
+					//Exit…
+					texts.exit()
+						.transition()
+						.duration(500)
+						.attr("x", -xScale2.rangeBand())
+						.remove();
 				};
 		</script>
 		<p></p><p></p>
